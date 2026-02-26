@@ -63,8 +63,11 @@ const config: Config = {
         },
       },
       fontFamily: {
-        serif: ['var(--font-serif)', 'Playfair Display', 'Georgia', 'serif'],
-        body: ['var(--font-body)', 'Cormorant Garamond', 'Georgia', 'serif'],
+        serif:      ['var(--font-playfair)',  'Playfair Display',   'Georgia', 'serif'],
+        cormorant:  ['var(--font-cormorant)', 'Cormorant Garamond', 'Georgia', 'serif'],
+        lora:       ['var(--font-lora)',       'Lora',               'Georgia', 'serif'],
+        crimson:    ['var(--font-crimson)',    'Crimson Pro',        'Georgia', 'serif'],
+        sacramento: ['var(--font-sacramento)', 'Sacramento',         'cursive'],
       },
       borderRadius: {
         lg: 'var(--radius)',

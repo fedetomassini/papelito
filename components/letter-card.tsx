@@ -1,187 +1,187 @@
-"use client";
+'use client'
 
-import { forwardRef } from "react";
-import type { NoteTheme } from "@/lib/note-themes";
+import { forwardRef } from 'react'
+import { type NoteTheme, FONT_OPTIONS, FONT_SIZES, type FontId, type FontSizeKey } from '@/lib/note-themes'
 
-interface LetterCardProps {
-	text: string;
-	isEditing: boolean;
-	onTextChange: (text: string) => void;
-	onStartEditing: () => void;
-	theme: NoteTheme;
+type Align = 'left' | 'center' | 'right'
+
+type Props = {
+  theme: NoteTheme
+  fontId: FontId
+  fontSize: FontSizeKey
+  bold: boolean
+  italic: boolean
+  align: Align
+  tilt: number
+  text: string
+  onChange: (text: string) => void
 }
 
-const LINE_HEIGHT = 30;
-const TOP_PADDING = 56;
+const MAX_CHARS = 600
+const NOTE_WIDTH = 420
+const NOTE_HEIGHT = 500
+const PAD_LEFT = 54
+const PAD_RIGHT = 32
+const PAD_TOP = 52
+const PAD_BOTTOM = 52
+const HOLE_COUNT = 7
 
-const LetterCard = forwardRef<HTMLDivElement, LetterCardProps>(
-	({ text, isEditing, onTextChange, onStartEditing, theme }, ref) => {
-		return (
-			<div
-				ref={ref}
-				className="relative w-[340px] sm:w-[400px] md:w-[440px] min-h-[420px] md:min-h-[480px]"
-				style={{ transform: "rotate(-2deg)" }}
-			>
-				{/* Paper shadow layers */}
-				<div
-					className="absolute inset-0 rounded-sm"
-					style={{
-						background: theme.shadowLayerDark,
-						transform: "rotate(0.7deg) translate(5px, 5px)",
-						zIndex: 0,
-					}}
-				/>
-				<div
-					className="absolute inset-0 rounded-sm"
-					style={{
-						background: theme.shadowLayerLight,
-						transform: "rotate(0.3deg) translate(2px, 2px)",
-						zIndex: 1,
-					}}
-				/>
+const LetterCard = forwardRef<HTMLDivElement, Props>(function LetterCard(
+  { theme, fontId, fontSize, bold, italic, align, tilt, text, onChange },
+  ref,
+) {
+  const fontCss = FONT_OPTIONS.find(f => f.id === fontId)?.cssVar ?? FONT_OPTIONS[0].cssVar
+  const { px, lineHeight } = FONT_SIZES[fontSize]
 
-				{/* Main paper */}
-				<div
-					className="relative z-10 rounded-sm overflow-hidden"
-					style={{
-						background: theme.paperGradient,
-						boxShadow: theme.shadowColor,
-					}}
-				>
-					{/* Notebook ruled lines */}
-					<div
-						className="absolute inset-0 pointer-events-none"
-						style={{
-							backgroundImage: `repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent ${LINE_HEIGHT - 1}px,
-                ${theme.lineColor} ${LINE_HEIGHT - 1}px,
-                ${theme.lineColor} ${LINE_HEIGHT}px
-              )`,
-							backgroundPosition: `0 ${TOP_PADDING}px`,
-							opacity: theme.lineOpacity,
-						}}
-					/>
+  const usableHeight = NOTE_HEIGHT - PAD_TOP - PAD_BOTTOM
+  const lineCount = Math.ceil(usableHeight / lineHeight) + 2
 
-					{/* Margin line */}
-					<div
-						className="absolute top-0 bottom-0 pointer-events-none"
-						style={{
-							left: "40px",
-							width: "1.5px",
-							background: theme.marginColor,
-							opacity: theme.marginOpacity,
-						}}
-					/>
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (e.target.value.length <= MAX_CHARS) onChange(e.target.value)
+  }
 
-					{/* Content area */}
-					<div
-						className="relative flex flex-col min-h-[420px] md:min-h-[480px]"
-						style={{
-							paddingTop: `${TOP_PADDING + 4}px`,
-							paddingLeft: "52px",
-							paddingRight: "32px",
-							paddingBottom: "16px",
-						}}
-					>
-						{isEditing ? (
-							<textarea
-								value={text}
-								onChange={(e) => onTextChange(e.target.value)}
-								className="w-full flex-1 bg-transparent resize-none outline-none italic"
-								style={{
-									fontFamily: "var(--font-body), 'Cormorant Garamond', serif",
-									fontSize: "18px",
-									lineHeight: `${LINE_HEIGHT}px`,
-									color: theme.textColor,
-									caretColor: theme.marginColor,
-								}}
-								placeholder={"Querido/a...\n\nEscribí tu nota acá..."}
-								autoFocus
-							/>
-						) : (
-							<div
-								className="w-full flex-1 cursor-pointer italic whitespace-pre-wrap"
-								style={{
-									fontFamily: "var(--font-body), 'Cormorant Garamond', serif",
-									fontSize: "18px",
-									lineHeight: `${LINE_HEIGHT}px`,
-									color: theme.textColor,
-								}}
-								onClick={onStartEditing}
-							>
-								{text || (
-									<span style={{ color: theme.placeholderColor }}>
-										{"Toca para escribir..."}
-									</span>
-								)}
-							</div>
-						)}
-					</div>
+  const textStyle: React.CSSProperties = {
+    fontFamily: fontCss,
+    fontSize: px,
+    lineHeight: `${lineHeight}px`,
+    fontWeight: bold ? 700 : 400,
+    fontStyle: italic ? 'italic' : 'normal',
+    textAlign: align,
+    color: theme.textColor,
+    caretColor: theme.accentColor,
+  }
 
-					{/* Wrinkled bottom edge */}
-					<div className="relative w-full h-14 -mt-2">
-						<svg
-							viewBox="0 0 440 56"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-							className="absolute bottom-0 left-0 w-full"
-							preserveAspectRatio="none"
-						>
-							<path
-								d="M0 7 C22 3, 38 15, 62 10 C86 5, 100 17, 124 12 C148 7, 162 19, 186 14 C210 9, 224 21, 248 16 C272 11, 286 23, 310 18 C334 13, 348 22, 372 18 C396 14, 420 19, 440 16 L440 56 L0 56 Z"
-								fill={theme.wrinkleShadow}
-								opacity="0.5"
-							/>
-							<path
-								d="M0 12 C26 7, 40 19, 68 13 C96 7, 108 21, 132 15 C156 9, 170 23, 194 17 C218 11, 232 25, 256 19 C280 13, 294 25, 318 20 C342 15, 356 23, 380 19 C404 15, 428 19, 440 17 L440 56 L0 56 Z"
-								fill={theme.wrinkleFold1}
-							/>
-							<path
-								d="M0 21 C30 15, 46 27, 76 20 C106 13, 118 28, 148 21 C178 14, 194 30, 220 23 C246 16, 262 31, 288 24 C314 18, 330 29, 356 24 C382 19, 416 26, 440 23 L440 56 L0 56 Z"
-								fill={theme.wrinkleFold2}
-							/>
-							<path
-								d="M0 30 C34 24, 54 34, 84 28 C114 22, 130 36, 160 30 C190 24, 210 38, 236 32 C262 26, 280 38, 306 33 C332 28, 352 36, 378 32 C404 28, 424 33, 440 31 L440 56 L0 56 Z"
-								fill={theme.wrinkleFold3}
-							/>
-							<path
-								d="M56 24 Q76 17 96 24"
-								stroke={theme.creaseColor}
-								strokeWidth="0.5"
-								fill="none"
-								opacity="0.6"
-							/>
-							<path
-								d="M186 22 Q210 14 234 22"
-								stroke={theme.creaseColor}
-								strokeWidth="0.5"
-								fill="none"
-								opacity="0.5"
-							/>
-							<path
-								d="M330 26 Q354 18 378 26"
-								stroke={theme.creaseColor}
-								strokeWidth="0.4"
-								fill="none"
-								opacity="0.4"
-							/>
-							<path
-								d="M118 28 Q138 21 158 28"
-								stroke={theme.creaseColor}
-								strokeWidth="0.4"
-								fill="none"
-								opacity="0.4"
-							/>
-						</svg>
-					</div>
-				</div>
-			</div>
-		);
-	},
-);
+  return (
+    <div style={{ transform: `rotate(${tilt}deg)`, transition: 'transform 0.3s ease' }}>
+      {/* Stacked paper shadows */}
+      <div style={{
+        position: 'absolute', width: NOTE_WIDTH, height: NOTE_HEIGHT,
+        background: theme.paperBgBottom, borderRadius: 3,
+        transform: 'rotate(1.8deg) translate(6px, 5px)', opacity: 0.65,
+      }} />
+      <div style={{
+        position: 'absolute', width: NOTE_WIDTH, height: NOTE_HEIGHT,
+        background: theme.paperBgBottom, borderRadius: 3,
+        transform: 'rotate(-1.2deg) translate(-4px, 3px)', opacity: 0.5,
+      }} />
 
-LetterCard.displayName = "LetterCard";
+      {/* Main card — this is what html2canvas captures */}
+      <div
+        ref={ref}
+        style={{
+          position: 'relative',
+          width: NOTE_WIDTH,
+          height: NOTE_HEIGHT,
+          background: `linear-gradient(175deg, ${theme.paperBg} 0%, ${theme.paperBgBottom} 100%)`,
+          boxShadow: theme.shadowColor,
+          borderRadius: 3,
+          overflow: 'hidden',
+        }}
+      >
+        {/* Accent top bar */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, height: 4,
+          background: theme.accentColor, opacity: 0.85, zIndex: 4,
+        }} />
 
-export default LetterCard;
+        {/* Header tint strip */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, height: PAD_TOP - 6,
+          background: theme.accentColor, opacity: 0.08, zIndex: 1,
+        }} />
+
+        {/* Spiral holes */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, width: 26, height: '100%',
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'space-evenly', paddingTop: 28, paddingBottom: 56, zIndex: 5,
+        }}>
+          {Array.from({ length: HOLE_COUNT }).map((_, i) => (
+            <div key={i} style={{
+              width: 11, height: 11, borderRadius: '50%',
+              background: `linear-gradient(135deg, ${theme.holeColor} 0%, ${theme.paperBgBottom} 100%)`,
+              boxShadow: `inset 0 1.5px 3px rgba(0,0,0,0.3), 0 0 0 1.5px ${theme.holeColor}88`,
+            }} />
+          ))}
+        </div>
+
+        {/* Margin vertical line */}
+        <div style={{
+          position: 'absolute', top: 0, left: 38, width: 1.5, height: '100%',
+          background: theme.marginColor, opacity: 0.4, zIndex: 2,
+        }} />
+
+        {/* Ruled lines — individual divs so html2canvas renders them */}
+        {Array.from({ length: lineCount }).map((_, i) => (
+          <div key={i} style={{
+            position: 'absolute',
+            top: PAD_TOP + i * lineHeight,
+            left: 0, right: 0, height: 1,
+            background: theme.lineColor,
+            opacity: theme.lineOpacity,
+            zIndex: 2,
+          }} />
+        ))}
+
+        {/* Textarea */}
+        <textarea
+          value={text}
+          onChange={handleChange}
+          placeholder="Escribe tu nota aquí..."
+          spellCheck={false}
+          style={{
+            ...textStyle,
+            position: 'absolute',
+            top: PAD_TOP,
+            left: PAD_LEFT,
+            width: NOTE_WIDTH - PAD_LEFT - PAD_RIGHT,
+            height: NOTE_HEIGHT - PAD_TOP - PAD_BOTTOM,
+            resize: 'none',
+            background: 'transparent',
+            border: 'none',
+            outline: 'none',
+            padding: 0,
+            margin: 0,
+            overflow: 'hidden',
+            zIndex: 6,
+          }}
+        />
+
+        {/* Placeholder colour via pseudo-element workaround — inject style tag */}
+        <style>{`textarea::placeholder { color: ${theme.placeholderColor}; }`}</style>
+
+        {/* Wrinkled bottom */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: PAD_BOTTOM,
+          zIndex: 7, pointerEvents: 'none',
+        }}>
+          <svg viewBox={`0 0 ${NOTE_WIDTH} ${PAD_BOTTOM}`} preserveAspectRatio="none"
+            style={{ width: '100%', height: '100%', display: 'block' }}>
+            {/* layer 1 */}
+            <path
+              d={`M0 10 C30 5,50 20,80 13 C110 6,128 20,158 13 C188 6,206 22,234 15 C262 8,280 24,310 17 C340 10,360 20,390 15 C410 11,${NOTE_WIDTH - 10} 14,${NOTE_WIDTH} 12 L${NOTE_WIDTH} ${PAD_BOTTOM} L0 ${PAD_BOTTOM} Z`}
+              fill={theme.wrinkleFill1}
+            />
+            {/* layer 2 */}
+            <path
+              d={`M0 20 C35 13,54 28,86 21 C118 14,136 30,166 23 C196 16,215 32,244 25 C273 18,292 34,321 27 C350 20,370 30,398 25 C412 22,${NOTE_WIDTH - 6} 26,${NOTE_WIDTH} 24 L${NOTE_WIDTH} ${PAD_BOTTOM} L0 ${PAD_BOTTOM} Z`}
+              fill={theme.wrinkleFill2}
+            />
+            {/* layer 3 */}
+            <path
+              d={`M0 30 C38 23,60 36,92 30 C124 23,143 38,174 31 C205 24,226 40,255 33 C284 26,304 41,334 34 C364 27,384 38,${NOTE_WIDTH} 34 L${NOTE_WIDTH} ${PAD_BOTTOM} L0 ${PAD_BOTTOM} Z`}
+              fill={theme.wrinkleFill3}
+            />
+            {/* crease lines */}
+            <path d={`M60 26 Q78 18 96 26`} stroke={theme.wrinkleCrease} strokeWidth="0.8" fill="none" />
+            <path d={`M170 22 Q192 14 212 22`} stroke={theme.wrinkleCrease} strokeWidth="0.7" fill="none" />
+            <path d={`M284 28 Q306 20 326 28`} stroke={theme.wrinkleCrease} strokeWidth="0.8" fill="none" />
+            <path d={`M370 24 Q388 16 406 24`} stroke={theme.wrinkleCrease} strokeWidth="0.7" fill="none" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  )
+})
+
+export default LetterCard

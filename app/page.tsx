@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { Toaster, toast } from "sonner";
 import html2canvas from "html2canvas";
 import { PenLine, Github, Instagram } from "lucide-react";
@@ -17,7 +18,7 @@ import {
 } from "@/lib/note-themes";
 
 const DEFAULT_THEME = NOTE_THEMES[0];
-const MAX_CHARS = 600;
+const MAX_CHARS = 460;
 const STORAGE_KEY = "papelito_v1";
 
 type SavedState = {
@@ -39,7 +40,7 @@ export default function HomePage() {
 	const [bold, setBold] = useState(false);
 	const [italic, setItalic] = useState(true);
 	const [align, setAlign] = useState<"left" | "center" | "right">("left");
-	const [tilt, setTilt] = useState(-2);
+	const [tilt, setTilt] = useState(0);
 
 	// undo / redo
 	const [history, setHistory] = useState<string[]>([""]);
@@ -64,7 +65,7 @@ export default function HomePage() {
 			setBold(saved.bold ?? false);
 			setItalic(saved.italic ?? true);
 			setAlign(saved.align ?? "left");
-			setTilt(saved.tilt ?? -2);
+			setTilt(saved.tilt ?? 0);
 			setHistory([saved.text ?? ""]);
 			if (saved.text)
 				toast("Nota restaurada", {
@@ -196,11 +197,14 @@ export default function HomePage() {
 				<header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
 					<div className="max-w-6xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between gap-4">
 						<div className="flex items-center gap-2.5">
-							<div
-								className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-								style={{ background: DEFAULT_THEME.accentColor }}
-							>
-								<PenLine className="w-4 h-4 text-white" />
+							<div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
+								<Image
+									src="/icon-light.ico"
+									width={32}
+									height={32}
+									quality={100}
+									alt="Icono de lápiz"
+								/>
 							</div>
 							<span
 								className="text-xl font-semibold tracking-tight"
@@ -208,8 +212,8 @@ export default function HomePage() {
 							>
 								Papelito
 							</span>
-							<span className="hidden sm:inline-flex items-center text-[11px] text-muted-foreground border border-border rounded-full px-2.5 py-0.5 leading-none">
-								Editor de notas
+							<span className="hidden sm:inline-flex items-center text-[11px] mt-1 text-muted-foreground border border-border rounded-full px-2.5 py-0.5 leading-none">
+								@fede.tomassini
 							</span>
 						</div>
 
@@ -330,7 +334,7 @@ export default function HomePage() {
 									["PNG 3×", "alta resolución"],
 									["Auto-guardado", "en borrador"],
 								].map(([value, label]) => (
-									<div key={value} className="flex flex-col">
+									<div key={value} className="flex flex-col max-md:mx-auto">
 										<span
 											className="text-sm font-semibold text-foreground"
 											style={{ fontFamily: "var(--font-playfair), serif" }}
@@ -346,7 +350,7 @@ export default function HomePage() {
 						</div>
 
 						{/* Right — note preview */}
-						<div className="flex-1 flex items-start justify-center lg:pt-8">
+						<div className="flex-1 flex items-start justify-center lg:pt-8 max-md:mx-auto max-lg:w-full">
 							<div
 								style={{ paddingLeft: 24, paddingRight: 24, paddingBottom: 28 }}
 							>
@@ -374,11 +378,14 @@ export default function HomePage() {
 				<footer className="border-t border-border bg-background/60 backdrop-blur-sm">
 					<div className="max-w-6xl mx-auto px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
 						<div className="flex items-center gap-2 text-sm text-muted-foreground">
-							<div
-								className="w-5 h-5 rounded flex items-center justify-center shrink-0"
-								style={{ background: DEFAULT_THEME.accentColor }}
-							>
-								<PenLine className="w-3 h-3 text-white" />
+							<div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
+								<Image
+									src="/icon-light.ico"
+									width={32}
+									height={32}
+									quality={100}
+									alt="Icono de lápiz"
+								/>
 							</div>
 							<span
 								className="font-medium text-foreground"

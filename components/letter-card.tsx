@@ -24,8 +24,8 @@ type Props = {
 };
 
 const MAX_CHARS = 460;
-const NOTE_WIDTH = 420;
-const NOTE_HEIGHT = 500;
+const NOTE_WIDTH = 375;
+const NOTE_HEIGHT = 475;
 const PAD_LEFT = 54;
 const PAD_RIGHT = 32;
 const PAD_TOP = 52;

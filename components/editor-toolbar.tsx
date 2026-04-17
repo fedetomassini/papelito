@@ -1,8 +1,6 @@
 "use client";
 
 import {
-	Bold,
-	Italic,
 	AlignLeft,
 	AlignCenter,
 	AlignRight,
@@ -12,7 +10,8 @@ import {
 	Copy,
 	Download,
 	ChevronDown,
-	RotateCcw,
+	Save,
+	Sparkles,
 } from "lucide-react";
 import {
 	FONT_OPTIONS,
@@ -46,6 +45,9 @@ type Props = {
 	onClear: () => void;
 	onCopy: () => void;
 	onDownload: () => void;
+	onSaveSnapshot: () => void;
+	onSurprise: () => void;
+	downloading?: boolean;
 };
 
 export default function EditorToolbar({
@@ -70,6 +72,9 @@ export default function EditorToolbar({
 	onClear,
 	onCopy,
 	onDownload,
+	onSaveSnapshot,
+	onSurprise,
+	downloading,
 }: Props) {
 	const currentFont =
 		FONT_OPTIONS.find((f) => f.id === fontId) ?? FONT_OPTIONS[0];
@@ -197,10 +202,43 @@ export default function EditorToolbar({
 					label={<Trash2 className="w-3.5 h-3.5" />}
 					standalone
 				/>
+
+				<ToolBtn
+					active={false}
+					onClick={onSaveSnapshot}
+					title="Guardar version"
+					label={<Save className="w-3.5 h-3.5" />}
+					standalone
+				/>
+				<ToolBtn
+					active={false}
+					onClick={onSurprise}
+					title="Sorprendeme"
+					label={<Sparkles className="w-3.5 h-3.5" />}
+					standalone
+				/>
 			</div>
 
 			{/* char counter + download */}
 			<div className="flex flex-col items-center gap-4">
+				<div className="w-full flex items-center justify-center gap-2">
+					<span className="text-xs text-muted-foreground">Inclinacion</span>
+					<input
+						type="range"
+						min={-8}
+						max={8}
+						value={tilt}
+						onChange={(e) => onTiltChange(Number(e.target.value))}
+						className="w-28"
+					/>
+					<button
+						onClick={() => onTiltChange(0)}
+						className="px-2 py-0.5 rounded border border-border bg-background text-[11px] hover:bg-muted transition-colors"
+					>
+						0°
+					</button>
+				</div>
+
 				{/* Char counter */}
 				<div className="flex items-center gap-2 mx-auto">
 					<div className="w-24 h-1 rounded-full bg-muted overflow-hidden">
@@ -229,10 +267,11 @@ export default function EditorToolbar({
 				{/* Download */}
 				<button
 					onClick={onDownload}
-					className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-foreground text-primary-foreground text-sm font-medium hover:opacity-80 active:scale-95 transition-all"
+					disabled={downloading}
+					className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-foreground text-primary-foreground text-sm font-medium hover:opacity-80 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
 				>
 					<Download className="w-3.5 h-3.5" />
-					Descargar
+					{downloading ? "Descargando..." : "Descargar"}
 				</button>
 			</div>
 		</div>

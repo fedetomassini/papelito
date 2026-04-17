@@ -75,3 +75,11 @@
 textarea {
 	field-sizing: content;
 }
+
+.letter-note-input::placeholder {
+	color: var(--placeholder-color);
+}
+
+input[type="range"] {
+	accent-color: hsl(var(--accent));
+}

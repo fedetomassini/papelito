@@ -288,6 +288,7 @@ const LetterCard = forwardRef<HTMLDivElement, Props>(function LetterCard(
 
 				<textarea
 					className="letter-note-input"
+					aria-label="Contenido de la nota"
 					value={text}
 					onChange={handleChange}
 					placeholder="Escribe tu nota aqui..."

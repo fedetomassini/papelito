@@ -24,7 +24,7 @@
 		--secondary: 36 18% 91%;
 		--secondary-foreground: 24 8% 18%;
 		--muted: 36 15% 93%;
-		--muted-foreground: 24 5% 52%;
+		--muted-foreground: 24 6% 38%;
 		--accent: 18 55% 42%;
 		--accent-foreground: 36 33% 97%;
 		--destructive: 0 72% 51%;
@@ -41,7 +41,9 @@
 
 	body {
 		@apply bg-background text-foreground overflow-x-hidden;
-		font-family: var(--font-cormorant), Georgia, serif;
+		font-family: var(--font-lora), Georgia, serif;
+		font-size: 16px;
+		line-height: 1.6;
 	}
 }
 
@@ -82,4 +84,56 @@ textarea {
 
 input[type="range"] {
 	accent-color: hsl(var(--accent));
+}
+
+.letter-stage {
+	padding: 0 24px 24px;
+}
+
+@media (min-width: 1024px) {
+	.letter-stage {
+		width: min(100%, 460px);
+		height: 590px;
+		padding: 0;
+		display: flex;
+		justify-content: center;
+	}
+
+	.letter-scale {
+		width: 375px;
+		flex: none;
+		transform: scale(1.12);
+		transform-origin: top center;
+	}
+}
+
+@media (max-width: 480px) {
+	.letter-stage {
+		width: 320px;
+		height: 460px;
+		padding: 0;
+		margin: 0 auto 18px;
+	}
+
+	.letter-scale {
+		transform: scale(0.85);
+		transform-origin: top left;
+	}
+}
+
+@media (max-width: 380px) {
+	.letter-stage {
+		width: 278px;
+		height: 410px;
+	}
+
+	.letter-scale {
+		transform: scale(0.74);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.letter-stage *, .letter-stage *::before, .letter-stage *::after {
+		transition-duration: 0.01ms !important;
+	}
 }

@@ -81,15 +81,16 @@ export default function EditorToolbar({
 	const charPct = (charCount / maxChars) * 100;
 
 	return (
-		<div className="w-full flex flex-col gap-3">
+		<div className="w-full flex flex-col gap-5">
 			{/* Row 1: font + size + style + alignment */}
-			<div className="flex flex-wrap items-center gap-2">
+			<div className="flex flex-wrap items-center gap-3">
 				{/* Font selector */}
 				<div className="relative">
 					<select
+						aria-label="Tipografía de la nota"
 						value={fontId}
 						onChange={(e) => onFontChange(e.target.value as FontId)}
-						className="appearance-none pl-3 pr-8 py-1.5 rounded-lg border border-border bg-background text-sm text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30 hover:border-foreground/30 transition-colors"
+						className="appearance-none h-11 pl-3 pr-8 rounded-lg border border-border bg-background text-base text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30 hover:border-foreground/30 transition-colors"
 						style={{ fontFamily: currentFont.cssVar }}
 					>
 						{FONT_OPTIONS.map((f) => (
@@ -106,9 +107,11 @@ export default function EditorToolbar({
 					{(Object.keys(FONT_SIZES) as FontSizeKey[]).map((key) => (
 						<button
 							key={key}
+							aria-label={`Tamaño ${FONT_SIZES[key].label}`}
+							aria-pressed={fontSize === key}
 							onClick={() => onFontSizeChange(key)}
 							className={cn(
-								"px-3 py-1.5 text-xs font-medium transition-colors",
+								"h-11 px-4 text-sm font-medium transition-colors",
 								fontSize === key
 									? "bg-foreground text-primary-foreground"
 									: "bg-background text-foreground hover:bg-muted",
@@ -120,7 +123,7 @@ export default function EditorToolbar({
 				</div>
 
 				{/* Separator */}
-				<div className="h-6 w-px bg-border" />
+				<div className="h-7 w-px bg-border" />
 
 				{/* Bold / Italic */}
 				<div className="flex items-center rounded-lg border border-border overflow-hidden">
@@ -128,18 +131,18 @@ export default function EditorToolbar({
 						active={bold}
 						onClick={onBoldToggle}
 						title="Negrita (Ctrl+B)"
-						label={<span className="font-bold text-sm">B</span>}
+						label={<span className="font-bold text-base">B</span>}
 					/>
 					<ToolBtn
 						active={italic}
 						onClick={onItalicToggle}
 						title="Cursiva (Ctrl+I)"
-						label={<span className="italic text-sm">I</span>}
+						label={<span className="italic text-base">I</span>}
 					/>
 				</div>
 
 				{/* Separator */}
-				<div className="h-6 w-px bg-border" />
+				<div className="h-7 w-px bg-border" />
 
 				{/* Alignment */}
 				<div className="flex items-center rounded-lg border border-border overflow-hidden">
@@ -147,24 +150,24 @@ export default function EditorToolbar({
 						active={align === "left"}
 						onClick={() => onAlignChange("left")}
 						title="Izquierda"
-						label={<AlignLeft className="w-3.5 h-3.5" />}
+						label={<AlignLeft className="w-4 h-4" />}
 					/>
 					<ToolBtn
 						active={align === "center"}
 						onClick={() => onAlignChange("center")}
 						title="Centro"
-						label={<AlignCenter className="w-3.5 h-3.5" />}
+						label={<AlignCenter className="w-4 h-4" />}
 					/>
 					<ToolBtn
 						active={align === "right"}
 						onClick={() => onAlignChange("right")}
 						title="Derecha"
-						label={<AlignRight className="w-3.5 h-3.5" />}
+						label={<AlignRight className="w-4 h-4" />}
 					/>
 				</div>
 
 				{/* Separator */}
-				<div className="h-6 w-px bg-border" />
+				<div className="h-7 w-px bg-border" />
 
 				{/* Undo / Redo */}
 				<div className="flex items-center rounded-lg border border-border overflow-hidden">
@@ -173,33 +176,33 @@ export default function EditorToolbar({
 						onClick={onUndo}
 						disabled={!canUndo}
 						title="Deshacer (Ctrl+Z)"
-						label={<Undo2 className="w-3.5 h-3.5" />}
+						label={<Undo2 className="w-4 h-4" />}
 					/>
 					<ToolBtn
 						active={false}
 						onClick={onRedo}
 						disabled={!canRedo}
 						title="Rehacer (Ctrl+Y)"
-						label={<Redo2 className="w-3.5 h-3.5" />}
+						label={<Redo2 className="w-4 h-4" />}
 					/>
 				</div>
 
 				{/* Separator */}
-				<div className="h-6 w-px bg-border" />
+				<div className="h-7 w-px bg-border" />
 
 				{/* Copy & Clear */}
 				<ToolBtn
 					active={false}
 					onClick={onCopy}
 					title="Copiar texto"
-					label={<Copy className="w-3.5 h-3.5" />}
+					label={<Copy className="w-4 h-4" />}
 					standalone
 				/>
 				<ToolBtn
 					active={false}
 					onClick={onClear}
 					title="Borrar todo"
-					label={<Trash2 className="w-3.5 h-3.5" />}
+					label={<Trash2 className="w-4 h-4" />}
 					standalone
 				/>
 
@@ -207,40 +210,41 @@ export default function EditorToolbar({
 					active={false}
 					onClick={onSaveSnapshot}
 					title="Guardar version"
-					label={<Save className="w-3.5 h-3.5" />}
+					label={<Save className="w-4 h-4" />}
 					standalone
 				/>
 				<ToolBtn
 					active={false}
 					onClick={onSurprise}
 					title="Sorprendeme"
-					label={<Sparkles className="w-3.5 h-3.5" />}
+					label={<Sparkles className="w-4 h-4" />}
 					standalone
 				/>
 			</div>
 
 			{/* char counter + download */}
-			<div className="flex flex-col items-center gap-4">
-				<div className="w-full flex items-center justify-center gap-2">
-					<span className="text-xs text-muted-foreground">Inclinacion</span>
+			<div className="flex flex-wrap items-center justify-between gap-5 border-t border-border pt-5">
+				<div className="flex items-center gap-3">
+					<span className="text-sm font-medium">Inclinación</span>
 					<input
 						type="range"
 						min={-8}
 						max={8}
 						value={tilt}
 						onChange={(e) => onTiltChange(Number(e.target.value))}
-						className="w-28"
+						className="w-32"
+						aria-label="Inclinación del papel"
 					/>
 					<button
 						onClick={() => onTiltChange(0)}
-						className="px-2 py-0.5 rounded border border-border bg-background text-[11px] hover:bg-muted transition-colors"
+						className="px-3 py-1 rounded border border-border bg-background text-sm hover:bg-muted transition-colors"
 					>
 						0°
 					</button>
 				</div>
 
 				{/* Char counter */}
-				<div className="flex items-center gap-2 mx-auto">
+				<div className="flex items-center gap-2">
 					<div className="w-24 h-1 rounded-full bg-muted overflow-hidden">
 						<div
 							className={cn(
@@ -256,7 +260,7 @@ export default function EditorToolbar({
 					</div>
 					<span
 						className={cn(
-							"text-xs tabular-nums",
+							"text-sm tabular-nums",
 							charPct > 90 ? "text-destructive" : "text-muted-foreground",
 						)}
 					>
@@ -268,7 +272,7 @@ export default function EditorToolbar({
 				<button
 					onClick={onDownload}
 					disabled={downloading}
-					className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-foreground text-primary-foreground text-sm font-medium hover:opacity-80 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+					className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-foreground text-primary-foreground text-sm font-medium hover:opacity-80 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
 				>
 					<Download className="w-3.5 h-3.5" />
 					{downloading ? "Descargando..." : "Descargar"}
@@ -298,8 +302,10 @@ function ToolBtn({
 			onClick={onClick}
 			disabled={disabled}
 			title={title}
+			aria-label={title}
+			aria-pressed={active || undefined}
 			className={cn(
-				"px-2.5 py-1.5 transition-colors flex items-center justify-center",
+				"min-w-11 h-11 px-3 text-base transition-colors flex items-center justify-center",
 				standalone ? "rounded-lg border border-border" : "",
 				active
 					? "bg-foreground text-primary-foreground"

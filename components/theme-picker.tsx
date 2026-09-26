@@ -19,15 +19,15 @@ export default function ThemePicker({ activeId, onSelect }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <p className="text-xs text-muted-foreground uppercase tracking-widest font-medium select-none">
+    <div className="flex flex-col gap-4 w-full">
+      <h2 className="font-serif text-xl font-semibold">
         Estilo de papel
-      </p>
+      </h2>
 
       <div className="relative flex items-center gap-1.5">
         <button
           onClick={() => scroll('left')}
-          className="shrink-0 w-7 h-7 rounded-full border border-border bg-background flex items-center justify-center hover:bg-muted transition-colors z-10"
+          className="shrink-0 w-9 h-9 rounded-full border border-border bg-background flex items-center justify-center hover:bg-muted transition-colors z-10"
           aria-label="Scroll izquierda"
         >
           <ChevronLeft className="w-3.5 h-3.5 text-foreground" />
@@ -35,7 +35,7 @@ export default function ThemePicker({ activeId, onSelect }: Props) {
 
         <div
           ref={scrollRef}
-          className="flex gap-3 overflow-x-auto py-2 px-0.5 flex-1"
+          className="flex gap-4 overflow-x-auto py-2 px-1 flex-1"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {NOTE_THEMES.map(theme => {
@@ -46,17 +46,17 @@ export default function ThemePicker({ activeId, onSelect }: Props) {
                 onClick={() => onSelect(theme)}
                 title={theme.name}
                 className={cn(
-                  'shrink-0 flex flex-col rounded-xl overflow-hidden transition-all duration-200 focus:outline-none',
+                  'shrink-0 flex flex-col rounded-xl overflow-hidden transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
                   isActive
                     ? 'ring-2 ring-foreground scale-[1.06] shadow-lg'
                     : 'ring-1 ring-border hover:ring-foreground/30 hover:scale-[1.03]',
                 )}
-                style={{ width: 72 }}
+                style={{ width: 88 }}
               >
                 {/* Paper preview */}
                 <div style={{
                   background: `linear-gradient(175deg, ${theme.paperBg} 0%, ${theme.paperBgBottom} 100%)`,
-                  height: 80,
+                  height: 94,
                   position: 'relative',
                   overflow: 'hidden',
                 }}>
@@ -109,10 +109,10 @@ export default function ThemePicker({ activeId, onSelect }: Props) {
                   textAlign: 'center',
                 }}>
                   <span style={{
-                    fontSize: 11,
+                    fontSize: 14,
                     fontWeight: isActive ? 600 : 400,
                     color: theme.textColor,
-                    fontFamily: 'var(--font-cormorant), Georgia, serif',
+                    fontFamily: 'var(--font-lora), Georgia, serif',
                     letterSpacing: '0.01em',
                     whiteSpace: 'nowrap',
                   }}>
@@ -126,7 +126,7 @@ export default function ThemePicker({ activeId, onSelect }: Props) {
 
         <button
           onClick={() => scroll('right')}
-          className="shrink-0 w-7 h-7 rounded-full border border-border bg-background flex items-center justify-center hover:bg-muted transition-colors z-10"
+          className="shrink-0 w-9 h-9 rounded-full border border-border bg-background flex items-center justify-center hover:bg-muted transition-colors z-10"
           aria-label="Scroll derecha"
         >
           <ChevronRight className="w-3.5 h-3.5 text-foreground" />
